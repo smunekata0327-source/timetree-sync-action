@@ -107,27 +107,12 @@ def sync():
         else:
             skipped_count += 1
 
-        # Remove duplicate Google copies carrying the same TimeTree ID.
-        for duplicate in matches[1:]:
-            google.delete_event(
-                Config.GOOGLE_CALENDAR_ID,
-                duplicate["id"],
-            )
-            deleted_count += 1
+        # Safety mode: duplicate deletion is disabled.
 
-    # Delete Google events owned by this sync when the source TimeTree event
-    # no longer exists. Native Google Calendar events are never included in
-    # google_event_map, so they are left untouched.
-    for timetree_id, matches in google_event_map.items():
-        if timetree_id in timetree_ids:
-            continue
+   
+    # Safety mode: automatic deletion is disabled.
+    # Existing Google Calendar events are preserved.
 
-        for google_event in matches:
-            google.delete_event(
-                Config.GOOGLE_CALENDAR_ID,
-                google_event["id"],
-            )
-            deleted_count += 1
 
     logger.info(
         "Sync complete: created=%d updated=%d deleted=%d skipped=%d",
